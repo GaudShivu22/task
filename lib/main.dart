@@ -31,7 +31,6 @@ class MyHomePageState extends State<MyHomePage> {
   var num1 = 0;
   var num2 = 0;
   var result = 0;
-  var apiResponse="";
   var author = '';
   var quote = '';
 
@@ -50,22 +49,23 @@ class MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  Future<void> fetchApiResponse() async {
+Future<void> fetchApiResponse() async {
     try {
-      final response = await DioClient.dioClient.getAPI(endPoint:ApiEndPoint.getQuotes);
-      setState(() {
-        author = response.data[0]['a'].toString() ;
-        quote = response.data[0]['q'].toString() ;
-
-      });
+      final response = await DioClient.dioClient.getAPI(endPoint: ApiEndPoint.getQuotes);
+      updateQuote(response.data[0]['a'].toString(), response.data[0]['q'].toString());
     } catch (e) {
       print('Error fetching API: $e');
-      setState(() {
-        author = '';
-        quote = 'Error fetching quote';
-      });
+      updateQuote('', 'Error fetching quote');
     }
   }
+
+  void updateQuote(String newAuthor, String newQuote) {
+    setState(() {
+      author = newAuthor;
+      quote = newQuote;
+    });
+  }
+
 
 
 
