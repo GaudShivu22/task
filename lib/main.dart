@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:task/anotherpage.dart';
 import 'apiendpoint.dart';
 import 'diocilent.dart';
 
@@ -52,10 +53,14 @@ class MyHomePageState extends State<MyHomePage> {
 Future<void> fetchApiResponse() async {
     try {
       final response = await DioClient.dioClient.getAPI(endPoint: ApiEndPoint.getQuotes);
-      updateQuote(response.data[0]['a'].toString(), response.data[0]['q'].toString());
-    } catch (e) {
+      // updateQuote(response.data[0]['a'].toString(), response.data[0]['q'].toString());
+      final newAuthor = response.data[0]['a'].toString();
+      final newQuote = response.data[0]['q'].toString();
+      updateQuote(newAuthor, newQuote);
+       } catch (e) {
       print('Error fetching API: $e');
       updateQuote('', 'Error fetching quote');
+
     }
   }
 
@@ -64,6 +69,12 @@ Future<void> fetchApiResponse() async {
       author = newAuthor;
       quote = newQuote;
     });
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AnotherPage(author: newAuthor, quote: newQuote),
+      ),
+    );
   }
 
 
@@ -78,9 +89,7 @@ Future<void> fetchApiResponse() async {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             const SizedBox(height: 60),
-            const Center(child: Text('Quote of the day',style: TextStyle(fontSize: 16), textAlign: TextAlign.center,)),
-            Text(' "$quote":$author ',style: const TextStyle(fontSize: 16)),
-            const SizedBox(height: 10,),
+
             const Center(child: Text("Adder",style: TextStyle(fontSize: 40,fontWeight: FontWeight.w600),)),
             Row(
               children: <Widget>[
