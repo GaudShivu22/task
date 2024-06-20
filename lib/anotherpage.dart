@@ -32,7 +32,7 @@ class _AnotherPageState extends State<AnotherPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Another Page'),
+        title: const Text('Another Page'),
       ),
       body: Center(
         child: Padding(
@@ -42,14 +42,14 @@ class _AnotherPageState extends State<AnotherPage> {
             children: [
               ElevatedButton(
                 onPressed: newquote,
-                child: Text('Update Quote'),
+                child: const Text('Update Quote'),
               ),
               Text(
                 quote,
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
                 textAlign: TextAlign.center,
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
 
             ],
           ),
