@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 class AnotherPage extends StatefulWidget {
-  const AnotherPage({super.key, required this.fetchApi,required this.Quote});
-  final Future<String> Function() fetchApi;
+  const AnotherPage({super.key, required this.fetchApiResponse,required this.Quote});
+  final Future<String> Function() fetchApiResponse;
    final String Quote;
 
 
@@ -22,7 +22,7 @@ class _AnotherPageState extends State<AnotherPage> {
   }
 
  Future<void> newquote() async {
-   String newQuote = await widget.fetchApi();
+   String newQuote = await widget.fetchApiResponse();
    setState(() {
      quote = newQuote;
    });
