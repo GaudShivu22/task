@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
 
-
 class AnotherPage extends StatefulWidget {
-  final String author;
-  final String quote;
+  final String currentAuthor;
+  final String currentQuote;
+  final Future<void> Function() fetchApiResponse;
 
-  const AnotherPage({Key? key, required this.author, required this.quote}) : super(key: key);
+  const AnotherPage({
+    Key? key,
+    required this.currentAuthor,
+    required this.currentQuote,
+    required this.fetchApiResponse,
+  }) : super(key: key);
 
   @override
-  _AnotherPageState createState() => _AnotherPageState();
+  State<AnotherPage> createState() => _AnotherPageState();
 }
 
 class _AnotherPageState extends State<AnotherPage> {
@@ -24,6 +29,16 @@ class _AnotherPageState extends State<AnotherPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             const SizedBox(height: 60),
+
+         //  call fetchapi function here
+            Center(
+              child: ElevatedButton(
+                onPressed: () async {
+                  await widget.fetchApiResponse();
+                },
+                child: const Text("Fetch New Quote"),
+              ),
+            ),
             const Center(
               child: Text(
                 'Quote of the day',
@@ -32,9 +47,10 @@ class _AnotherPageState extends State<AnotherPage> {
               ),
             ),
             Text(
-              ' "${widget.quote}" : ${widget.author} ',
+              ' "${widget.currentQuote}" : ${widget.currentAuthor} ',
               style: const TextStyle(fontSize: 16),
             ),
+
           ],
         ),
       ),
