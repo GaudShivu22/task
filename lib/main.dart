@@ -20,24 +20,25 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: Task(),
+      home: Home(),
     );
   }
 }
-class  extends StatefulWidget {
-  const Task({super.key});
+class  Home extends StatefulWidget {
+  const Home({super.key});
 
   @override
-  State<Task> createState() => _TaskState();
+  State<Home> createState() => HomeState();
 }
 
-class _TaskState extends State<Task> {
+class HomeState extends State<Home> {
 
   int num1=0;
   int num2=0;
   int result = 0;
+  final key=GlobalKey<FormState>();
+  List<String> calculationHistory = [];
 
- final key=GlobalKey<FormState>();
 
 
 
@@ -48,7 +49,6 @@ class _TaskState extends State<Task> {
     });
   }
 
-  List<String> calculationHistory = [];
 
   void addToHistory() {
     setState(() {
@@ -146,13 +146,11 @@ class _TaskState extends State<Task> {
                   ),
                   const SizedBox(width: 10),
                   Flexible(
-                    child: TextFormField(
-
-                      decoration: InputDecoration(
-                        labelText: "$result",
+                    child: Text(
+                      "$result",style: TextStyle(decoration: TextDecoration.underline),
                       ),
                     ),
-                  ),
+
                 ],
               ),
               const SizedBox(height: 40),
@@ -178,4 +176,3 @@ class _TaskState extends State<Task> {
     );
   }
 }
-
