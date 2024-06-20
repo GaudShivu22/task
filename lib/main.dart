@@ -1,47 +1,51 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'controller.dart';
+import 'package:task/anotherpage.dart';
+import 'apiendpoint.dart';
+import 'diocilent.dart';
 import 'form_validation.dart';
 
 void main() {
-  runApp(ProviderScope(child: const MyApp()));
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
+  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Tasks',
-      home: MyHomePage(),
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        useMaterial3: true,
+      ),
+      home: Task(),
     );
   }
 }
-
-class MyHomePage extends ConsumerStatefulWidget {
-  const MyHomePage({super.key});
+class Task extends StatefulWidget {
+  const Task({super.key});
 
   @override
- ConsumerState<MyHomePage> createState() => MyHomePageState();
+  State<Task> createState() => _TaskState();
 }
 
-class MyHomePageState extends ConsumerState<MyHomePage> {
-  var num1 = 0;
-  var num2 = 0;
-  var result = 0;
+class _TaskState extends State<Task> {
+
+  int num1=0;
+  int num2=0;
+  int result = 0;
+
+ final key=GlobalKey<FormState>();
+
 
 
 
   void addNumbers() {
-
-      setState(() {
-        result = num1 + num2;
-        addToHistory();
-        ref.read(controllerProvider).callApi(context);
-      });
-
+    setState(() {
+      result = num1 + num2;
+    });
   }
 
   List<String> calculationHistory = [];
@@ -52,30 +56,40 @@ class MyHomePageState extends ConsumerState<MyHomePage> {
     });
   }
 
+  Future<String> fetchApiResponse() async {
+    try {
+      final response = await DioClient.dioClient.getAPI(endPoint: ApiEndPoint.getQuotes);
+      return  response.data[0]['q'];
 
+    } catch (e) {
+      return "Failed to fetch quote: $e";
+    }
+  }
   @override
   Widget build(BuildContext context) {
-    final textcontroller=ref.watch(controllerProvider);
+
     return Scaffold(
       body: Padding(
-        padding: const EdgeInsets.all(20.0),
+        padding: const EdgeInsets.all(10),
         child: Form(
-          key:textcontroller.formKey,
+          key:key,
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              const SizedBox(height: 60),
-              const Center(
-                child: Text(
-                  "Adder",
-                  style: TextStyle(fontSize: 40, fontWeight: FontWeight.w600),
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SizedBox(height: 60),
+              Text(
+                "Adder",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 24,
                 ),
               ),
+              SizedBox(height: 50),
               Row(
-                children: <Widget>[
+                children: [
+                  SizedBox(width: 10),
                   Flexible(
                     child: TextFormField(
-
                       keyboardType: TextInputType.number,
                       decoration: const InputDecoration(
                         labelText: 'Enter number 1',
@@ -89,6 +103,8 @@ class MyHomePageState extends ConsumerState<MyHomePage> {
                       },
                     ),
                   ),
+
+
                   const Icon(Icons.add),
                   Flexible(
                     child: TextFormField(
@@ -105,9 +121,24 @@ class MyHomePageState extends ConsumerState<MyHomePage> {
                       },
                     ),
                   ),
+
+
                   const SizedBox(width: 10),
                   GestureDetector(
-                    onTap: addNumbers,
+                  onTap: () async {
+                    if (key.currentState!.validate()) {
+                      key.currentState!.save();
+                      addNumbers();
+                      addToHistory();
+                      String quote = await fetchApiResponse();
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => AnotherPage(fetchApi: fetchApiResponse, Quote: quote),
+                        ),
+                      );
+                    }
+                    },
                     child: const Text(
                       "=",
                       style: TextStyle(fontWeight: FontWeight.w600, fontSize: 35),
@@ -116,7 +147,7 @@ class MyHomePageState extends ConsumerState<MyHomePage> {
                   const SizedBox(width: 10),
                   Flexible(
                     child: TextFormField(
-                      readOnly: true,
+
                       decoration: InputDecoration(
                         labelText: "$result",
                       ),
@@ -139,6 +170,7 @@ class MyHomePageState extends ConsumerState<MyHomePage> {
                   },
                 ),
               ),
+
             ],
           ),
         ),
@@ -146,3 +178,4 @@ class MyHomePageState extends ConsumerState<MyHomePage> {
     );
   }
 }
+
