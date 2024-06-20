@@ -20,24 +20,25 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: Task(),
+      home: Home(),
     );
   }
 }
-class Task extends StatefulWidget {
-  const Task({super.key});
+class Home extends StatefulWidget {
+  const Home({super.key});
 
   @override
-  State<Task> createState() => _TaskState();
+  State<Home> createState() => _HomeState();
 }
 
-class _TaskState extends State<Task> {
+class _HomeState extends State<Home> {
 
   int num1=0;
   int num2=0;
   int result = 0;
+  final key=GlobalKey<FormState>();
+  List<String> calculationHistory = [];
 
- final key=GlobalKey<FormState>();
 
 
 
@@ -48,7 +49,6 @@ class _TaskState extends State<Task> {
     });
   }
 
-  List<String> calculationHistory = [];
 
   void addToHistory() {
     setState(() {
@@ -60,11 +60,12 @@ class _TaskState extends State<Task> {
     try {
       final response = await DioClient.dioClient.getAPI(endPoint: ApiEndPoint.getQuotes);
       return  response.data[0]['q'];
-
     } catch (e) {
       return "Failed to fetch quote: $e";
     }
   }
+
+
   @override
   Widget build(BuildContext context) {
 
@@ -76,18 +77,17 @@ class _TaskState extends State<Task> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              SizedBox(height: 60),
-              Text(
+              const SizedBox(height: 60),
+              const Text(
                 "Adder",
                 style: TextStyle(
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w600,
                   fontSize: 24,
                 ),
               ),
-              SizedBox(height: 50),
+              const SizedBox(height: 50),
               Row(
                 children: [
-                  SizedBox(width: 10),
                   Flexible(
                     child: TextFormField(
                       keyboardType: TextInputType.number,
@@ -106,6 +106,7 @@ class _TaskState extends State<Task> {
 
 
                   const Icon(Icons.add),
+
                   Flexible(
                     child: TextFormField(
                       keyboardType: TextInputType.number,
@@ -123,7 +124,7 @@ class _TaskState extends State<Task> {
                   ),
 
 
-                  const SizedBox(width: 10),
+
                   GestureDetector(
                   onTap: () async {
                     if (key.currentState!.validate()) {
@@ -139,15 +140,15 @@ class _TaskState extends State<Task> {
                       );
                     }
                     },
+
                     child: const Text(
                       "=",
                       style: TextStyle(fontWeight: FontWeight.w600, fontSize: 35),
                     ),
                   ),
-                  const SizedBox(width: 10),
+                
                   Flexible(
                     child: TextFormField(
-
                       decoration: InputDecoration(
                         labelText: "$result",
                       ),
