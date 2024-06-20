@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'anotherpage.dart';
-import 'apiendpoint.dart';
-import 'diocilent.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'controller.dart';
 import 'form_validation.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(ProviderScope(child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -21,30 +20,28 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyHomePage extends StatefulWidget {
+class MyHomePage extends ConsumerStatefulWidget {
   const MyHomePage({super.key});
 
   @override
-  MyHomePageState createState() => MyHomePageState();
+ ConsumerState<MyHomePage> createState() => MyHomePageState();
 }
 
-class MyHomePageState extends State<MyHomePage> {
+class MyHomePageState extends ConsumerState<MyHomePage> {
   var num1 = 0;
   var num2 = 0;
   var result = 0;
-  var author = '';
-  var quote = '';
 
-  final Key = GlobalKey<FormState>();
+
 
   void addNumbers() {
-    if (Key.currentState!.validate()) {
+
       setState(() {
         result = num1 + num2;
         addToHistory();
-        fetchApiResponse();
+        ref.read(controllerProvider).callApi(context);
       });
-    }
+
   }
 
   List<String> calculationHistory = [];
@@ -55,53 +52,15 @@ class MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  Future<void> fetchApiResponse() async {
-    try {
-      final response = await DioClient.dioClient.getAPI(endPoint: ApiEndPoint.getQuotes);
-      final newAuthor = response.data[0]['a'].toString();
-      final newQuote = response.data[0]['q'].toString();
-      updateQuote(newAuthor, newQuote);
-    } catch (e) {
-      print('Error fetching API: $e');
-      updateQuote('', 'Error fetching quote');
-    }
-  }
-
-  void updateQuote(String newAuthor, String newQuote) {
-    setState(() {
-      author = newAuthor;
-      quote = newQuote;
-    });
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => AnotherPage(
-          currentAuthor: author,
-          currentQuote: quote,
-          fetchApiResponse: fetchApiResponse,
-        ),
-      ),
-    );
-  }
-
-
-
-
-
-
-
-
-
-
-
 
   @override
   Widget build(BuildContext context) {
+    final textcontroller=ref.watch(controllerProvider);
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Form(
-          key: Key,
+          key:textcontroller.formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
@@ -116,6 +75,7 @@ class MyHomePageState extends State<MyHomePage> {
                 children: <Widget>[
                   Flexible(
                     child: TextFormField(
+
                       keyboardType: TextInputType.number,
                       decoration: const InputDecoration(
                         labelText: 'Enter number 1',
