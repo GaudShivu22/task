@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 
-class AnotherPage extends StatelessWidget {
+class AnotherPage extends StatefulWidget {
   final String currentAuthor;
   final String currentQuote;
   final Future<void> Function() fetchApiResponse;
 
   AnotherPage({required this.currentAuthor, required this.currentQuote, required this.fetchApiResponse});
 
+  @override
+  State<AnotherPage> createState() => _AnotherPageState();
+}
+
+class _AnotherPageState extends State<AnotherPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,13 +25,13 @@ class AnotherPage extends StatelessWidget {
             Center(
               child: ElevatedButton(
                 onPressed: () async {
-                  await fetchApiResponse();
+                  await widget.fetchApiResponse();
                 },
                 child: Text('Fetch New Quote'),
               ),
             ),
-            Text('Quote: $currentQuote'),
-            Text('Author: $currentAuthor'),
+            Text('Quote: ${widget.currentQuote}'),
+            Text('Author: ${widget.currentAuthor}'),
 
 
           ],
